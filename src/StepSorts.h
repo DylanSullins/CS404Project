@@ -5,6 +5,12 @@
 #include <stack>
 extern "C"
 {
+    struct MaxMin
+    {
+        int max;
+        int min;
+    };
+
     // COMPARISON SORTS
     struct ComparisonSortState
     {
@@ -26,6 +32,10 @@ extern "C"
     bool bubbleSortStep(ComparisonSortState* state);
     void bubbleSortFree(ComparisonSortState* state);
 
+    int comparisonSortGetHighlightI(ComparisonSortState* state);
+    int comparisonSortGetHighlightJ(ComparisonSortState* state);
+    int comparisonSortGetHighlightWrite(ComparisonSortState* state);
+
     
     // QUICK SORT
     struct QuickSortTask
@@ -44,11 +54,15 @@ extern "C"
         int high;
         int start;
         int end;
+        int highlight_i = -1, highlight_j = -1, highlight_write = -1;
         bool done = false;
     };
 
     QuickSortState* quickSortInit(int* arr, int length);
     bool quickSortStep(QuickSortState* state);
+    int quickSortGetHighlightI(QuickSortState* state);
+    int quickSortGetHighlightJ(QuickSortState* state);
+    int quickSortGetHighlightWrite(QuickSortState* state);
     void quickSortFree(QuickSortState* state);
 
 
@@ -69,10 +83,10 @@ extern "C"
     {
         std::vector<int> data;
         int* externalData;
-
         std::stack<MergeTask> tasks;
         std::vector<int> temp;
         int i, j, k;
+        int highlight_i = -1, highlight_j = -1, highlight_write = -1;
         bool isMerging = false;
         MergeTask currentTask;
         bool done = false;
@@ -80,15 +94,42 @@ extern "C"
 
     MergeSortState* mergeSortInit(int* arr, int length);
     bool mergeSortStep(MergeSortState* state);
+    int mergeSortGetHighlightI(MergeSortState* state);
+    int mergeSortGetHighlightJ(MergeSortState* state);
+    int mergeSortGetHighlightWrite(MergeSortState* state);
     void mergeSortFree(MergeSortState* state);
 
 
     // TODO: IMPLEMENT THE REST OF THE SORTS STEP BY STEP FOR USE WITH PYGAME
-    void placeSortStep(std::vector<int>& list, int place);
 
-    void radixSortStep(std::vector<int>& list);
+    // Radix Sort
+    struct RadixSortState
+    {
+        std::vector<int> data;
+        std::vector<int> temp;
+        std::vector<int> count;
+        int* externalData;
+        int max, place, phase, index;
+        bool done;
+    };
 
-    void countingSortStep(std::vector<int>& list);
+    RadixSortState* radixSortInit(int* arr, int length);
+    bool radixSortStep(RadixSortState* state);
+    void radixSortFree(RadixSortState* state);
+    int radixSortGetHighlightWrite(RadixSortState* state);
 
-    void bucketSortStep(std::vector<int>& list);
+    // Counting Sort
+    struct CountingSortState
+    {
+        std::vector<int> data;
+        std::vector<int> count;
+        std::vector<int> output;
+        int* externalData;
+        int max, phase, index;
+        bool done;
+    };
+    CountingSortState* countingSortInit(int* arr, int length);
+    bool countingSortStep(CountingSortState* state);
+    void countingSortFree(CountingSortState* state);
+    int countingSortGetHighlightWrite(CountingSortState* state);
 }
