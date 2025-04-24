@@ -6,7 +6,7 @@ import Wrapper
 
 # CONSTANTS
 WIDTH, HEIGHT = 2560, 1340
-BAR_WIDTH = 4
+BAR_WIDTH = 1
 NUM_BARS = WIDTH // BAR_WIDTH
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -41,7 +41,7 @@ def main():
         still_sorting = sorter.step()
         draw_bars(screen, sorter.get_array())
         pygame.display.flip()
-        clock.tick(2**11)
+        clock.tick(60)
 
         if not still_sorting:
             break
