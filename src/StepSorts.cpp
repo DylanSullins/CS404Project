@@ -1,25 +1,6 @@
-#include "Sorts.h"
+#include "StepSorts.h"
 
-void print(std::vector<int>& list)
-{
-    int last = list.size() - 1;
-    std::cout << "[";
-    for (int i = 0; i < last; i++) {
-        std::cout << list[i] << ", ";
-    }
-    std::cout << list[last] << "]" << std::endl;
-}
-
-bool isSorted(std::vector<int>& list)
-{
-    for (int i = 0; i < list.size() - 1; ++i)
-    {
-        if (list[i] > list[i + 1]) return false;
-    }
-    return true;
-}
-
-void insertionSort(std::vector<int>& list)
+void insertionSortStep(std::vector<int>& list)
 {
     int i, j;
     for (i = 0; i < list.size(); ++i)
@@ -33,7 +14,7 @@ void insertionSort(std::vector<int>& list)
     }
 }
 
-void selectionSort(std::vector<int>& list)
+void selectionSortStep(std::vector<int>& list)
 {
     int i, j, mindex;
     for (i = 0; i < list.size(); ++i)
@@ -48,7 +29,7 @@ void selectionSort(std::vector<int>& list)
 }
 
 
-void bubbleSort(std::vector<int>& list)
+void bubbleSortStep(std::vector<int>& list)
 {
     int i, j;
     for (i = list.size() - 1; i > 0; i--) {
@@ -60,7 +41,7 @@ void bubbleSort(std::vector<int>& list)
     }
 }
 
-int partition(std::vector<int>& list, int start, int end)
+int partitionStep(std::vector<int>& list, int start, int end)
 {
     int pivot = list[(start + end) / 2];
     int low = start;
@@ -90,15 +71,15 @@ int partition(std::vector<int>& list, int start, int end)
     return high;
 }
 
-void quickSort(std::vector<int>& list, int start, int end)
+void quickSortStep(std::vector<int>& list, int start, int end)
 {
     if (start >= end) {return;}
-    int p = partition(list, start, end);
-    quickSort(list, start, p);
-    quickSort(list, p + 1, end);
+    int p = partitionStep(list, start, end);
+    quickSortStep(list, start, p);
+    quickSortStep(list, p + 1, end);
 }
 
-void merge(std::vector<int>& list, int start, int mid, int end)
+void mergeStep(std::vector<int>& list, int start, int mid, int end)
 {
     std::vector<int> temp(end - start + 1);
     int i = start, j = mid + 1, k = 0;
@@ -122,36 +103,16 @@ void merge(std::vector<int>& list, int start, int mid, int end)
     }
 }
 
-void mergeSort(std::vector<int>& list, int start, int end)
+void mergeSortStep(std::vector<int>& list, int start, int end)
 {
     if (start >= end) return;
     int mid = (start + end) / 2;
-    mergeSort(list, start, mid);
-    mergeSort(list, mid+1, end);
-    merge(list, start, mid, end);
+    mergeSortStep(list, start, mid);
+    mergeSortStep(list, mid+1, end);
+    mergeStep(list, start, mid, end);
 }
 
-
-
-MaxMin maxMin(std::vector<int> list)
-{
-    int max = list[0];
-    int min = list[0];
-    for (int i = 1; i < list.size(); i++) 
-    {
-        if (list[i] > max) 
-        {
-            max = list[i];
-        }
-        else if (list[i] < min)
-        {
-            min = list[i];
-        }
-    }
-    return {max, min};
-}
-
-void placeSort(std::vector<int>& list, int place) 
+void placeSortStep(std::vector<int>& list, int place) 
 {
     std::vector<int> tempList(list.size());
     std::vector<int> placeCount(10);
@@ -178,16 +139,16 @@ void placeSort(std::vector<int>& list, int place)
     }
 }
 
-void radixSort(std::vector<int>& list)
+void radixSortStep(std::vector<int>& list)
 {
     int max = maxMin(list).max;
     for (int place = 1; max / place > 0; place *= 10) 
     {
-        placeSort(list, place);
+        placeSortStep(list, place);
     }
 }
 
-void countingSort(std::vector<int>& list)
+void countingSortStep(std::vector<int>& list)
 {
     int max = maxMin(list).max;
     std::vector<int> count(max + 1);
@@ -211,7 +172,7 @@ void countingSort(std::vector<int>& list)
     list = sorted;
 }
 
-void bucketSort(std::vector<int>& list)
+void bucketSortStep(std::vector<int>& list)
 {
     int num_buckets = std::sqrt(list.size());
     MaxMin maxAndMin = maxMin(list);
@@ -234,7 +195,7 @@ void bucketSort(std::vector<int>& list)
         buckets.at(bucket_index).push_back(element);
     }
     for (std::vector<int>& bucket : buckets) {
-        radixSort(bucket);
+        radixSortStep(bucket);
     }
     
     std::vector<int> sorted;

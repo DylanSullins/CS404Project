@@ -1,20 +1,47 @@
-#include "Sorts.h"
 #include <chrono>
+#include <iostream>
 #include <random>
+#include <string>
 
-int main()
+#include "Sorts.h"
+
+int main(int argc, char** argv)
 {
+    if (argc != 3)
+    {
+        std::cerr << "ERROR: Too Few Arguments.\n"
+                  << "\tProper Syntax: program.exe [n items] [max limit for RNG]" 
+                  << std::endl;
+        return -1;
+    }
+    // Timing Initialization
     auto start = std::chrono::high_resolution_clock::now();
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::microseconds duration;
 
-    int max_int = 100000;
-    int listSize = 10000;
+    // Random List of Integers Initialization
+    int max_int, list_size;
+    try
+    {
+        max_int = std::stoi(argv[2]);
+        list_size = std::stoi(argv[1]);
+
+    }
+    catch(const std::invalid_argument& e)
+    {
+        std::cerr << "Invalid argument: " << e.what() << std::endl;
+        return -1;
+    }
+    catch(const std::out_of_range& e)
+    {
+        std::cerr << "Out of range error: " << e.what() << std::endl;
+        return -1;
+    }
+    std::vector<int> OrigList;
     std::random_device dev;
     std::mt19937_64 rng(dev());
     std::uniform_int_distribution<std::mt19937_64::result_type> dist(0, max_int);
-    std::vector<int> OrigList;
-    for (int i = 0; i < listSize; i++)
+    for (int i = 0; i < list_size; i++)
     {
         OrigList.push_back(dist(rng));
     }
@@ -25,7 +52,8 @@ int main()
     std::vector<int> countList = OrigList;
     std::vector<int> radixList = OrigList;
     std::vector<int> bucketList = OrigList;
-    
+
+    // Sorting
     std::cout << "== INSERTION SORT ==" << std::endl;
     start = std::chrono::high_resolution_clock::now();
     insertionSort(insertionList);
