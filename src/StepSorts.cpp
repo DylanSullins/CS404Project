@@ -1,206 +1,274 @@
 #include "StepSorts.h"
 
-void insertionSortStep(std::vector<int>& list)
+extern "C"
 {
-    int i, j;
-    for (i = 0; i < list.size(); ++i)
+    ComparisonSortState* insertionSortInit(int * arr, int length)
     {
-        j = i;
-        while (j > 0 && list[j] < list[j-1])
-        {
-            std::swap(list[j], list[j-1]);
-            --j;
-        }
+        ComparisonSortState* state = new ComparisonSortState;
+        state->data = std::vector<int>(arr, arr+length);
+        state->externalData = arr;
+        state->i = 0;
+        state->j = 0;
+        state->done = false;
+        return state;
     }
-}
-
-void selectionSortStep(std::vector<int>& list)
-{
-    int i, j, mindex;
-    for (i = 0; i < list.size(); ++i)
+    bool insertionSortStep(ComparisonSortState* state)
     {
-        mindex = i;
-        for (j = i + 1; j < list.size(); ++j)
+        if (state->i >= state->data.size())
         {
-            if (list[j] < list[mindex]) mindex = j;
+            state->done = true;
+            std::copy(state->data.begin(), state->data.end(), state->externalData);
+            return false;
         }
-        std::swap(list[i], list[mindex]);
-    }
-}
-
-
-void bubbleSortStep(std::vector<int>& list)
-{
-    int i, j;
-    for (i = list.size() - 1; i > 0; i--) {
-        for (j = 0; j < i; j++) {
-            if (list[j] > list[j+1]) {
-                std::swap(list[j], list[j+1]);
+        if (state->j > 0)
+        {
+            if (state->data[state->j] < state->data[state->j - 1])
+            {
+                std::swap(state->data[state->j], state->data[state->j - 1]);
             }
-        }
-    }
-}
-
-int partitionStep(std::vector<int>& list, int start, int end)
-{
-    int pivot = list[(start + end) / 2];
-    int low = start;
-    int high = end;
-    bool done = false;
-    while (!done) 
-    {
-        while (list[low] < pivot)
-        {
-            ++low;
-        }
-        while (list[high] > pivot)
-        {
-            --high;
-        }
-        if (low >= high)
-        {
-            done = true;
-        }
-        else 
-        {
-            std::swap(list[low], list[high]);
-            ++low;
-            --high;
-        }
-    }
-    return high;
-}
-
-void quickSortStep(std::vector<int>& list, int start, int end)
-{
-    if (start >= end) {return;}
-    int p = partitionStep(list, start, end);
-    quickSortStep(list, start, p);
-    quickSortStep(list, p + 1, end);
-}
-
-void mergeStep(std::vector<int>& list, int start, int mid, int end)
-{
-    std::vector<int> temp(end - start + 1);
-    int i = start, j = mid + 1, k = 0;
-
-    while (i <= mid && j <= end)
-    {
-        if (list[i] < list[j])
-        {
-            temp[k++] = list[i++];
+            state->j--;
         }
         else
         {
-            temp[k++] = list[j++];
+            state->i++;
+            state->j = state->i;
+        }
+        std::copy(state->data.begin(), state->data.end(), state->externalData);
+        return true;
+    }
+    void insertionSortFree(ComparisonSortState* state)
+    {
+        delete state;
+    }
+
+    ComparisonSortState* selectionSortInit(int * arr, int length)
+    {
+        ComparisonSortState* state = new ComparisonSortState;
+        state->data = std::vector<int>(arr, arr + length);
+        state->externalData = arr;
+        state->i = 0;
+        state->j = 1;
+        state->done = false;
+        state->mindex = 0;
+        return state;
+    }
+    bool selectionSortStep(ComparisonSortState* state)
+    {
+        if (state->i >= state->data.size())
+        {
+            if (!state->done) 
+            {
+                std::copy(state->data.begin(), state->data.end(), state->externalData);
+                state->done = true;
+            }
+            return false;
+        }
+        if (state->j < state->data.size())
+        {
+            if (state->data[state->j] < state->data[state->mindex])
+            {
+                state->mindex = state->j;
+            }
+            state->j++;
+        }
+        else
+        {
+            std::swap(state->data[state->i], state->data[state->mindex]);
+            state->i++;
+            state->j = state->i + 1;
+            state->mindex = state->i;
+        }
+        std::copy(state->data.begin(), state->data.end(), state->externalData);
+        return true;
+    }
+    void selectionSortFree(ComparisonSortState* state)
+    {
+        delete state;
+    }
+
+    ComparisonSortState* bubbleSortInit(int * arr, int length)
+    {
+        ComparisonSortState* state = new ComparisonSortState;
+        state->data = std::vector<int>(arr, arr+length);
+        state->externalData = arr;
+        state->i = length - 1;
+        state->j = 0;
+        state->done = false;
+        return state;
+    }
+    bool bubbleSortStep(ComparisonSortState* state)
+    {
+        if (state->i <= 0)
+        {
+            state->done = true;
+            std::copy(state->data.begin(), state->data.end(), state->externalData);
+            return false;
+        }
+        
+        if (state->j < state->i)
+        {
+            if (state->data[state->j] > state->data[state->j + 1])
+            {
+                std::swap(state->data[state->j], state->data[state->j + 1]);
+            }
+            state->j++;
+        }
+        else
+        {
+            state->i--;
+            state->j = 0;
+        }
+        std::copy(state->data.begin(), state->data.end(), state->externalData);
+        return true;
+    }
+    void bubbleSortFree(ComparisonSortState* state)
+    {
+        delete state;
+    }
+
+    QuickSortState* quickSortInit(int* arr, int length)
+    {
+        QuickSortState* state = new QuickSortState;
+        state->data = std::vector<int>(arr, arr + length);
+        state->externalData = arr;
+        state->stack.push_back({0, length - 1});
+        return state;
+    }
+
+    bool quickSortStep(QuickSortState* state)
+    {
+        if (state->done) return false;
+        if (!state->isPartitioning)
+        {
+            if (state->stack.empty())
+            {
+                std::copy(state->data.begin(), state->data.end(), state->externalData);
+                state->done = true;
+                return false;
+            }
+            state->start = state->stack.back().start;
+            state->end = state->stack.back().end;
+            state->stack.pop_back();
+            if (state->start >= state->end) return true;
+
+            state->pivot = state->data[(state->start + state->end) / 2];
+            state->low = state->start;
+            state->high = state->end;
+            state->isPartitioning = true;
+        }
+
+        while (state->low <= state->high && state->data[state->low] < state->pivot) state->low++;
+        while(state->low <= state->high && state->data[state->high] > state->pivot) state->high--;
+
+        if (state->low <= state->high)
+        {
+            std::swap(state->data[state->low], state->data[state->high]);
+            state->low++;
+            state->high--;
+            std::copy(state->data.begin(), state->data.end(), state->externalData);
+            return true;
+        }
+        int leftStart = state->start;
+        int leftEnd = state->high;
+        int rightStart = state->low;
+        int rightEnd = state->end;
+
+        if (leftStart < leftEnd)
+        {
+            state->stack.push_back({leftStart, leftEnd});
+        }
+        if (rightStart < rightEnd)
+        {
+            state->stack.push_back({rightStart, rightEnd});
+        }
+        state->isPartitioning = false;
+        return true;
+    }
+
+    void quickSortFree(QuickSortState* state)
+    {
+        delete state;
+    }
+
+    MergeSortState* mergeSortInit(int* arr, int length)
+    {
+        MergeSortState* state = new MergeSortState;
+        state->data = std::vector<int>(arr, arr + length);
+        state->externalData = arr;
+        state->tasks.push({MergeTaskType::SPLIT, 0, 0, length - 1});
+        return state;
+    }
+
+    bool mergeSortStep(MergeSortState* state)
+    {
+        if (state->done) return false;
+    
+        if (state->isMerging)
+        {
+            auto& task = state->currentTask;
+    
+            if (state->i <= task.mid && state->j <= task.end)
+            {
+                if (state->data[state->i] < state->data[state->j])
+                    state->temp[state->k++] = state->data[state->i++];
+                else
+                    state->temp[state->k++] = state->data[state->j++];
+    
+                return true;
+            }
+    
+            if (state->i <= task.mid)
+                state->temp[state->k++] = state->data[state->i++];
+    
+            else if (state->j <= task.end)
+                state->temp[state->k++] = state->data[state->j++];
+    
+            else
+            {
+                for (int t = 0; t < state->temp.size(); ++t)
+                    state->data[task.start + t] = state->temp[t];
+    
+                std::copy(state->data.begin(), state->data.end(), state->externalData);
+                state->isMerging = false;
+            }
+    
+            return true;
+        }
+    
+        if (state->tasks.empty())
+        {
+            std::copy(state->data.begin(), state->data.end(), state->externalData);
+            state->done = true;
+            return false;
+        }
+    
+        MergeTask task = state->tasks.top();
+        state->tasks.pop();
+    
+        if (task.type == MergeTaskType::SPLIT)
+        {
+            if (task.start >= task.end) return true;
+    
+            int mid = (task.start + task.end) / 2;
+            state->tasks.push({MergeTaskType::MERGE, task.start, mid, task.end});
+            state->tasks.push({MergeTaskType::SPLIT, mid + 1, 0, task.end});
+            state->tasks.push({MergeTaskType::SPLIT, task.start, 0, mid});
+            return true;
+        }
+        else
+        {
+            state->currentTask = task;
+            state->i = task.start;
+            state->j = task.mid + 1;
+            state->k = 0;
+            state->temp = std::vector<int>(task.end - task.start + 1);
+            state->isMerging = true;
+            return true;
         }
     }
-    while (i <= mid) temp[k++] = list[i++];
-    while (j <= end) temp[k++] = list[j++];
-    for (int t = 0; t < temp.size(); ++t)
+
+    void mergeSortFree(MergeSortState* state)
     {
-        list[start + t] = temp[t];
+        delete state;
     }
-}
-
-void mergeSortStep(std::vector<int>& list, int start, int end)
-{
-    if (start >= end) return;
-    int mid = (start + end) / 2;
-    mergeSortStep(list, start, mid);
-    mergeSortStep(list, mid+1, end);
-    mergeStep(list, start, mid, end);
-}
-
-void placeSortStep(std::vector<int>& list, int place) 
-{
-    std::vector<int> tempList(list.size());
-    std::vector<int> placeCount(10);
-    int i;
-
-    for (i = 0; i < list.size(); i++) 
-    {
-        placeCount[(list[i] / place) % 10]++;
-    }
-
-    for (i = 1; i < 10; i++) 
-    {
-        placeCount[i] += placeCount[i - 1];
-    }
-
-    for (i = list.size() - 1; i >= 0; i--) 
-    {
-        tempList[placeCount[(list[i] / place) % 10] - 1] = list[i];
-        placeCount[(list[i] / place) % 10]--;
-    }
-
-    for (i = 0; i < list.size(); i++) {
-        list[i] = tempList[i];
-    }
-}
-
-void radixSortStep(std::vector<int>& list)
-{
-    int max = maxMin(list).max;
-    for (int place = 1; max / place > 0; place *= 10) 
-    {
-        placeSortStep(list, place);
-    }
-}
-
-void countingSortStep(std::vector<int>& list)
-{
-    int max = maxMin(list).max;
-    std::vector<int> count(max + 1);
-
-    for (int element : list) 
-    {
-        count[element]++;
-    }
-
-    for (int i = 1; i < max + 1; i++) 
-    {
-        count[i] += count[i - 1];
-    }
-
-    std::vector<int> sorted(list.size());
-    for (int element : list) 
-    {
-        sorted[count[element] - 1] = element;
-        count[element]--;
-    }
-    list = sorted;
-}
-
-void bucketSortStep(std::vector<int>& list)
-{
-    int num_buckets = std::sqrt(list.size());
-    MaxMin maxAndMin = maxMin(list);
-    int max = maxAndMin.max;
-    int min = maxAndMin.min;
-    if (max - min == 0) {return;}
-    if (num_buckets > (max - min)) {
-        num_buckets = max - min;
-    }
-    std::vector<std::vector<int>> buckets(num_buckets);
-
-    
-    int bucket_size = (max - min + 1) / num_buckets;
-    
-    for (int element : list) {
-        int bucket_index = (element - min) / bucket_size;
-        if (bucket_index >= num_buckets) {
-            bucket_index = num_buckets - 1;
-        }
-        buckets.at(bucket_index).push_back(element);
-    }
-    for (std::vector<int>& bucket : buckets) {
-        radixSortStep(bucket);
-    }
-    
-    std::vector<int> sorted;
-    for (std::vector<int>& bucket : buckets) {
-        sorted.insert(sorted.end(), bucket.begin(), bucket.end());
-    }
-    list = sorted;
 }
