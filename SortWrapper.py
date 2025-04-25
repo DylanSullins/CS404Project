@@ -1,6 +1,10 @@
 import ctypes
 import os
 
+""" Python Wrapper for C++ Sorting Algorithms
+Wraps C++ implemented sorting algorithms in python classes for use in Sort.py
+"""
+
 dll_path = os.path.join(os.path.dirname(__file__), "Sorts.dll")
 try:
     sorts = ctypes.CDLL(dll_path)

@@ -1,6 +1,10 @@
 import ctypes
 import os
 
+""" Python Wrapper for C++ State-Based Sorting Algorithms
+Wraps C++ implemented sorting algorithms in python classes for use in Visualizer.py
+"""
+
 dll_path = os.path.join(os.path.dirname(__file__), "StepSorts.dll")
 try:
     sorts = ctypes.CDLL(dll_path)

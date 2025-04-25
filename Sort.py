@@ -5,6 +5,14 @@ import time
 
 import SortWrapper
 
+"""
+An experimental analysis of the runtime of various sorting algorithms
+Proper usage is as follows:
+py ./Sort.py [int number of items] [int max possible number to generate] [int number of iterations to run] [string mode parameter]
+(modes: -C for simple comparison sorts, -E for efficient sorts, -A for all sorts)
+Warning: -A mode with sufficiently large numbers of items will take a long time to complete
+"""
+
 def main():
     if (len(sys.argv) != 5):
         print(f"Invalid Syntax: Sorts.py [numItems] [maxNum] [repeats] [-A/-C/-E]")

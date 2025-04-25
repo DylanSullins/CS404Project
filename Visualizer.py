@@ -6,6 +6,16 @@ import sys
 
 import VisualWrapper
 
+""" A pygame-based visualizer of sorting algorithms
+Proper usage is as follows:
+py ./Visualizer.py 
+Generates a list of random integers, duplicates the list and runs each sort back to back
+Each value in the list is represented by a bar of height = value
+Number of values in the list is calculated by WIDTH // BAR_WIDTH
+A tone is played at varying frequencies depending on the inner workings of the sorting algorithms using the class AudioPlayer
+Press Escape to advance to the next portion of the visualization
+"""
+
 # CONSTANTS
 WIDTH, HEIGHT = 2560, 1440
 BAR_WIDTH = 10
