@@ -5,11 +5,13 @@
 #include <stack>
 extern "C"
 {
+    // Max/Min Helper
     struct MaxMin
     {
         int max;
         int min;
     };
+    MaxMin maxMin(std::vector<int> list);
 
     // COMPARISON SORTS
     struct ComparisonSortState

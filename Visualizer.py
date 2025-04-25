@@ -3,12 +3,12 @@ import pyaudio
 import pygame
 import random
 import sys
-import time
-import Wrapper
+
+import VisualWrapper
 
 # CONSTANTS
 WIDTH, HEIGHT = 2560, 1440
-BAR_WIDTH = 1
+BAR_WIDTH = 10
 NUM_BARS = WIDTH // BAR_WIDTH
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -60,13 +60,13 @@ def main():
 
     # Data Initialization
     data = [random.randint(1, HEIGHT) for _ in range(NUM_BARS)]
-    insertionSorter = Wrapper.InsertionSortWrapper(data[:])
-    selectionSorter = Wrapper.SelectionSortWrapper(data[:])
-    bubbleSorter = Wrapper.BubbleSortWrapper(data[:])
-    quickSorter = Wrapper.QuickSortWrapper(data[:])
-    mergeSorter = Wrapper.MergeSortWrapper(data[:])
-    radixSorter = Wrapper.RadixSortWrapper(data[:])
-    countingSorter = Wrapper.CountingSortWrapper(data[:])
+    insertionSorter = VisualWrapper.InsertionSortWrapper(data[:])
+    selectionSorter = VisualWrapper.SelectionSortWrapper(data[:])
+    bubbleSorter = VisualWrapper.BubbleSortWrapper(data[:])
+    quickSorter = VisualWrapper.QuickSortWrapper(data[:])
+    mergeSorter = VisualWrapper.MergeSortWrapper(data[:])
+    radixSorter = VisualWrapper.RadixSortWrapper(data[:])
+    countingSorter = VisualWrapper.CountingSortWrapper(data[:])
     sorters = {
         "Insertion Sort":insertionSorter,
         "Selection Sort":selectionSorter,

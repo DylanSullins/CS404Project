@@ -2,3 +2,5 @@
 .vscode
 *.dll
 __pycache__
+Documentation
+matplot_output
