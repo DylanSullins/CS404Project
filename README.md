@@ -2,6 +2,8 @@
 CS404 Sorting Algorithms Comparison Project
 
 ## Requirements
+C++, GCC compiler or other compiler 
+Python, Pygame, numpy, matplotlib
 
 ## Installation Instructions
 
