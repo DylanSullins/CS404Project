@@ -1,3 +1,4 @@
+import imageio
 import numpy
 import pyaudio
 import pygame
@@ -52,6 +53,10 @@ def draw_bars(screen, data, highlight_indices=None):
         color = RED if highlight_indices and i in highlight_indices else WHITE
         pygame.draw.rect(screen, color, (i * BAR_WIDTH, HEIGHT - val, BAR_WIDTH, val))
 
+def capture_frame(screen, writer):
+    data = pygame.surfarray.array3d(screen)
+    data = numpy.transpose(data, (1, 0, 2))
+    writer.append_data(data)
 
 def main():
     # Pygame Initialization
@@ -94,6 +99,7 @@ def main():
     
     dummy_data = [random.randint(1, HEIGHT) for _ in range(NUM_BARS)]
     count = 0
+    """
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -110,7 +116,9 @@ def main():
         draw_bars(screen, dummy_data)
         screen.blit(welcome_text, welcome_text_rect)
         pygame.display.flip()
+    """
     for name, sorter in sorters.items():
+        writer = imageio.get_writer('video/' + name + '_vis.mp4', fps=60, codec='libx264', quality=8)
         # Main Loop
         name_text = display_font.render(name, True, RED, WHITE)
         name_text_rect = name_text.get_rect()
@@ -130,7 +138,8 @@ def main():
                 running = False
             count += 1
             screen.blit(name_text, name_text_rect)
-            pygame.display.flip()
+            # pygame.display.flip()
+            capture_frame(screen, writer)
         running = True
         while running:
             for event in pygame.event.get():
@@ -148,11 +157,12 @@ def main():
             highlight_k = sorter.get_highlight_write()
             highlighters = [i for i in (highlight_i, highlight_j, highlight_k) if 0 <= i < len(sorter.get_array())]
             base_height = sorter.get_sound_data()
-            frequency = 200 + base_height/HEIGHT * 1000
-            player.play_tone(frequency=frequency, duration_ms=30)
+            #frequency = 200 + base_height/HEIGHT * 1000
+            #player.play_tone(frequency=frequency, duration_ms=30)
 
             draw_bars(screen, sorter.get_array(), highlighters)
-            pygame.display.flip()
+            # pygame.display.flip()
+            capture_frame(screen, writer)
             clock.tick(0)
 
             running = running and still_sorting
@@ -173,10 +183,14 @@ def main():
             count += 1
             draw_bars(screen, sorter.get_array(), highlighters)
             screen.blit(sorted_text, sorted_text_rect)
-            pygame.display.flip()
+            # pygame.display.flip()
+            capture_frame(screen, writer)
         sorter.cleanup()
+        writer.close()
+        frames = []
     player.cleanup()
     pygame.quit()
+
     sys.exit()
 
 if __name__ == "__main__":
