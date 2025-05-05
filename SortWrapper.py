@@ -5,7 +5,8 @@ import os
 Wraps C++ implemented sorting algorithms in python classes for use in Sort.py
 """
 
-dll_path = os.path.join(os.path.dirname(__file__), "Sorts.dll")
+#dll_path = os.path.join(os.path.dirname(__file__), "Sorts.dll")
+dll_path = os.path.join(os.path.dirname(__file__), "libsorts.so")
 try:
     sorts = ctypes.CDLL(dll_path)
 except OSError as e:
@@ -13,6 +14,7 @@ except OSError as e:
     print(f"Path: {dll_path}")
     print(f"Error: {e}")
     raise
+
 
 # Function Wrappers
 sorts.isSortedRaw.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]

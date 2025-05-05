@@ -17,7 +17,7 @@ Press Escape to advance to the next portion of the visualization
 """
 
 # CONSTANTS
-WIDTH, HEIGHT = 2560, 1440
+WIDTH, HEIGHT = 1920, 1080 #2560, 1440
 BAR_WIDTH = 10
 NUM_BARS = WIDTH // BAR_WIDTH
 WHITE = (255, 255, 255)

@@ -5,7 +5,8 @@ import os
 Wraps C++ implemented sorting algorithms in python classes for use in Visualizer.py
 """
 
-dll_path = os.path.join(os.path.dirname(__file__), "StepSorts.dll")
+#dll_path = os.path.join(os.path.dirname(__file__), "StepSorts.dll")
+dll_path = os.path.join(os.path.dirname(__file__), "vissorts.so")
 try:
     sorts = ctypes.CDLL(dll_path)
 except OSError as e:
